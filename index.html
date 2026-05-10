@@ -15,11 +15,11 @@
     --bg:        #191919;
     --surface:   #202020;
     --border:    #2e2e2e;
-    --gold:      #e06c5a;
-    --gold-dim:  #9e3d2e;
+    --gold:      #df4f39;
+    --gold-dim:  #c22710;
     --text:      #e8e8e6;
-    --text-muted:#9e6b63;
-    --text-dim:  #4a3530;
+    --text-muted:#9e301f;
+    --text-dim:  #d35252;
   }
 
   body {
@@ -30,8 +30,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
+    justify-content: flex-start;
+    padding: 1.25rem 1rem;
   }
 
   /* ── ornament ── */
@@ -41,7 +41,7 @@
     letter-spacing: .35em;
     color: var(--gold-dim);
     text-transform: uppercase;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -57,9 +57,9 @@
   /* ── card ── */
   .card {
     width: 100%;
-    max-width: 680px;
+    max-width: 100%;
     border: 1px solid var(--border);
-    padding: 3rem 3.5rem;
+    padding: 1.5rem 2.5rem;
     position: relative;
     background: transparent;
   }
@@ -79,7 +79,7 @@
     letter-spacing: .3em;
     color: var(--gold);
     text-transform: uppercase;
-    margin-bottom: .5rem;
+    margin-bottom: .25rem;
   }
 
   .theme-label {
@@ -88,34 +88,34 @@
     letter-spacing: .25em;
     color: var(--text-dim);
     text-transform: uppercase;
-    margin-bottom: 2.5rem;
+    margin-bottom: .75rem;
   }
 
   .quote-mark {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 80px;
+    font-size: 48px;
     line-height: .6;
     color: var(--gold);
-    margin-bottom: 1.25rem;
+    margin-bottom: .75rem;
     opacity: .35;
     user-select: none;
   }
 
   .quote-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 300;
     font-style: italic;
-    line-height: 1.65;
+    line-height: 1.55;
     color: var(--text);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   .divider {
     display: flex;
     align-items: center;
     gap: .75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: .75rem;
   }
   .divider::before, .divider::after {
     content: '';
