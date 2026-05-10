@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Stoic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #191919;
+    --surface:   #202020;
+    --border:    #2e2e2e;
+    --gold:      #e06c5a;
+    --gold-dim:  #9e3d2e;
+    --text:      #e8e8e6;
+    --text-muted:#9e6b63;
+    --text-dim:  #4a3530;
+  }
+
+  body {
+    background: transparent;
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  /* ── ornament ── */
+  .ornament {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: .35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .ornament::before, .ornament::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: var(--gold-dim);
+  }
+
+  /* ── card ── */
+  .card {
+    width: 100%;
+    max-width: 680px;
+    border: 1px solid var(--border);
+    padding: 3rem 3.5rem;
+    position: relative;
+    background: transparent;
+  }
+  .card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: var(--gold-dim);
+    border-style: solid;
+  }
+  .card::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+  .card::after  { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+
+  .date-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+
+  .theme-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+  }
+
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    line-height: .6;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+    opacity: .35;
+    user-select: none;
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .divider-dot {
+    width: 4px; height: 4px;
+    background: var(--gold-dim);
+    transform: rotate(45deg);
+  }
+
+  .quote-author {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: .2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: .4rem;
+  }
+
+  .quote-source {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* ── no quote fallback ── */
+  .no-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  /* ── admin panel ── */
+  .admin-toggle {
+    margin-top: 3rem;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: .5rem 1.25rem;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .admin-toggle:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+
+  .admin-panel {
+    width: 100%;
+    max-width: 680px;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    padding: 2rem 2.5rem;
+    display: none;
+  }
+  .admin-panel.open { display: block; }
+
+  .admin-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: .3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .field-group {
+    margin-bottom: 1.25rem;
+  }
+  .field-group label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: .4rem;
+  }
+  .field-group input,
+  .field-group textarea,
+  .field-group select {
+    width: 100%;
+    background: #2f2f2f;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    padding: .6rem .85rem;
+    outline: none;
+    transition: border-color .2s;
+    resize: vertical;
+  }
+  .field-group input:focus,
+  .field-group textarea:focus,
+  .field-group select:focus { border-color: var(--gold-dim); }
+  .field-group select option { background: #2f2f2f; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: .75rem;
+    margin-top: 1.5rem;
+  }
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    padding: .65rem 1.5rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-muted);
+    transition: all .2s;
+  }
+  .btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+  .btn-primary { border-color: var(--gold-dim); color: var(--gold); }
+  .btn-primary:hover { background: var(--gold-dim); color: var(--bg); }
+  .btn-danger:hover { border-color: #8a3030; color: #c05050; }
+
+  .quote-list {
+    margin-top: 1.75rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+  }
+  .quote-list-title {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .25em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .quote-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: .75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .quote-item:last-child { border-bottom: none; }
+  .quote-item-info { flex: 1; min-width: 0; }
+  .quote-item-day {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: .15em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: .25rem;
+  }
+  .quote-item-text {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .quote-item-actions { display: flex; gap: .4rem; flex-shrink: 0; }
+  .btn-sm {
+    font-family: 'Cinzel', serif;
+    font-size: 8px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: .3rem .7rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    transition: all .2s;
+  }
+  .btn-sm:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+  .btn-sm.del:hover { border-color: #8a3030; color: #c05050; }
+
+  .status-msg {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gold-dim);
+    margin-top: .75rem;
+    min-height: 1.2em;
+  }
+
+  .search-row {
+    display: flex;
+    gap: .75rem;
+    margin-bottom: 1rem;
+  }
+  .search-row input {
+    flex: 1;
+    background: #2f2f2f;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'EB Garamond', serif;
+    font-size: 14px;
+    padding: .5rem .8rem;
+    outline: none;
+  }
+  .search-row input:focus { border-color: var(--gold-dim); }
+
+  /* ── fade-in ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .card { animation: fadeIn .6s ease both; }
+</style>
+</head>
+<body>
+
+<div class="ornament">Daily Stoic</div>
+
+<div class="card" id="quoteCard">
+  <div class="date-label" id="dateLabel"></div>
+  <div class="theme-label" id="themeLabel"></div>
+  <div class="quote-mark" aria-hidden="true">"</div>
+  <p class="quote-text" id="quoteText"></p>
+  <div class="divider"><div class="divider-dot"></div></div>
+  <p class="quote-author" id="quoteAuthor"></p>
+  <p class="quote-source" id="quoteSource"></p>
+</div>
+
+<button class="admin-toggle" onclick="toggleAdmin()">Manage Quotes</button>
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-title">Add / Edit Quote</div>
+
+  <input type="hidden" id="editIndex" value="-1">
+
+  <div class="field-row">
+    <div class="field-group">
+      <label>Day of Year (1–365)</label>
+      <input type="number" id="inputDay" min="1" max="365" placeholder="e.g. 131 = May 10">
+    </div>
+    <div class="field-group">
+      <label>Theme</label>
+      <input type="text" id="inputTheme" placeholder="e.g. Clarity of perception">
+    </div>
+  </div>
+
+  <div class="field-group">
+    <label>Quote</label>
+    <textarea id="inputQuote" rows="3" placeholder="Enter the Stoic quote here..."></textarea>
+  </div>
+
+  <div class="field-row">
+    <div class="field-group">
+      <label>Author</label>
+      <input type="text" id="inputAuthor" placeholder="e.g. Marcus Aurelius">
+    </div>
+    <div class="field-group">
+      <label>Source</label>
+      <input type="text" id="inputSource" placeholder="e.g. Meditations, 6.8">
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="saveQuote()">Save Quote</button>
+    <button class="btn" onclick="clearForm()">Clear</button>
+    <button class="btn btn-danger" onclick="clearAll()" style="margin-left:auto">Clear All Data</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+
+  <div class="quote-list">
+    <div class="quote-list-title">Saved Quotes</div>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="Search by author, theme, or text..." oninput="renderList()">
+    </div>
+    <div id="quoteListBody"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'daily_stoic_quotes';
+
+function getQuotes() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveQuotes(quotes) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
+}
+
+function getDayOfYearGMT8() {
+  const now = new Date();
+  const gmt8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+  const start = new Date(Date.UTC(gmt8.getUTCFullYear(), 0, 0));
+  const diff = gmt8 - start;
+  return Math.floor(diff / 86400000);
+}
+
+function formatDate() {
+  const now = new Date();
+  const gmt8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${days[gmt8.getUTCDay()]}, ${months[gmt8.getUTCMonth()]} ${gmt8.getUTCDate()}, ${gmt8.getUTCFullYear()}`;
+}
+
+function renderQuote() {
+  const day = getDayOfYearGMT8();
+  const quotes = getQuotes();
+  const q = quotes.find(q => Number(q.day) === day);
+
+  document.getElementById('dateLabel').textContent = formatDate();
+
+  if (!q) {
+    document.getElementById('themeLabel').textContent = `Day ${day} of 365`;
+    document.getElementById('quoteText').textContent = 'No quote has been added for today yet.';
+    document.getElementById('quoteText').style.color = 'var(--text-dim)';
+    document.getElementById('quoteAuthor').textContent = '';
+    document.getElementById('quoteSource').textContent = 'Open "Manage Quotes" below to add one.';
+    return;
+  }
+
+  document.getElementById('themeLabel').textContent = q.theme || `Day ${day} of 365`;
+  document.getElementById('quoteText').textContent = q.quote;
+  document.getElementById('quoteText').style.color = 'var(--text)';
+  document.getElementById('quoteAuthor').textContent = q.author;
+  document.getElementById('quoteSource').textContent = q.source;
+}
+
+function toggleAdmin() {
+  const panel = document.getElementById('adminPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) renderList();
+}
+
+function saveQuote() {
+  const day    = parseInt(document.getElementById('inputDay').value);
+  const quote  = document.getElementById('inputQuote').value.trim();
+  const author = document.getElementById('inputAuthor').value.trim();
+  const source = document.getElementById('inputSource').value.trim();
+  const theme  = document.getElementById('inputTheme').value.trim();
+  const editIdx = parseInt(document.getElementById('editIndex').value);
+
+  if (!day || day < 1 || day > 365) return showStatus('Please enter a valid day (1–365).');
+  if (!quote) return showStatus('Please enter a quote.');
+  if (!author) return showStatus('Please enter an author.');
+
+  const quotes = getQuotes();
+
+  if (editIdx >= 0) {
+    quotes[editIdx] = { day, quote, author, source, theme };
+    showStatus('Quote updated.');
+    document.getElementById('editIndex').value = -1;
+  } else {
+    const existing = quotes.findIndex(q => Number(q.day) === day);
+    if (existing >= 0) {
+      quotes[existing] = { day, quote, author, source, theme };
+      showStatus(`Day ${day} quote replaced.`);
+    } else {
+      quotes.push({ day, quote, author, source, theme });
+      quotes.sort((a, b) => a.day - b.day);
+      showStatus(`Quote for day ${day} saved.`);
+    }
+  }
+
+  saveQuotes(quotes);
+  clearForm();
+  renderList();
+  renderQuote();
+}
+
+function editQuote(idx) {
+  const filtered = getFiltered();
+  const q = filtered[idx];
+  const allQuotes = getQuotes();
+  const realIdx = allQuotes.indexOf(q);
+
+  document.getElementById('editIndex').value = realIdx;
+  document.getElementById('inputDay').value    = q.day;
+  document.getElementById('inputQuote').value  = q.quote;
+  document.getElementById('inputAuthor').value = q.author;
+  document.getElementById('inputSource').value = q.source;
+  document.getElementById('inputTheme').value  = q.theme || '';
+  document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function deleteQuote(idx) {
+  const filtered = getFiltered();
+  const q = filtered[idx];
+  const quotes = getQuotes();
+  const realIdx = quotes.indexOf(q);
+  if (realIdx < 0) return;
+  quotes.splice(realIdx, 1);
+  saveQuotes(quotes);
+  renderList();
+  renderQuote();
+  showStatus('Quote deleted.');
+}
+
+function clearForm() {
+  document.getElementById('editIndex').value   = -1;
+  document.getElementById('inputDay').value    = '';
+  document.getElementById('inputQuote').value  = '';
+  document.getElementById('inputAuthor').value = '';
+  document.getElementById('inputSource').value = '';
+  document.getElementById('inputTheme').value  = '';
+}
+
+function clearAll() {
+  if (!confirm('Delete ALL saved quotes? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderList();
+  renderQuote();
+  showStatus('All quotes cleared.');
+}
+
+function showStatus(msg) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 3000);
+}
+
+function getFiltered() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const quotes = getQuotes();
+  if (!q) return quotes;
+  return quotes.filter(item =>
+    (item.quote  || '').toLowerCase().includes(q) ||
+    (item.author || '').toLowerCase().includes(q) ||
+    (item.theme  || '').toLowerCase().includes(q) ||
+    String(item.day).includes(q)
+  );
+}
+
+function renderList() {
+  const filtered = getFiltered();
+  const body = document.getElementById('quoteListBody');
+  if (!filtered.length) {
+    body.innerHTML = '<p style="font-family:\'EB Garamond\',serif;font-style:italic;color:var(--text-dim);font-size:14px;padding:.5rem 0">No quotes saved yet.</p>';
+    return;
+  }
+  body.innerHTML = filtered.map((q, i) => `
+    <div class="quote-item">
+      <div class="quote-item-info">
+        <div class="quote-item-day">Day ${q.day}${q.theme ? ' · ' + q.theme : ''}</div>
+        <div class="quote-item-text">${q.quote}</div>
+        <div style="font-family:'Cinzel',serif;font-size:9px;color:var(--text-dim);margin-top:.25rem;letter-spacing:.1em">${q.author}${q.source ? ' — ' + q.source : ''}</div>
+      </div>
+      <div class="quote-item-actions">
+        <button class="btn-sm" onclick="editQuote(${i})">Edit</button>
+        <button class="btn-sm del" onclick="deleteQuote(${i})">Del</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+renderQuote();
+</script>
+</body>
+</html>
